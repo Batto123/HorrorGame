@@ -91,9 +91,6 @@ public class Basic3DMovment : MonoBehaviour
                 StandUp();
             }
         }
-
-        // Aktualisierung des canStandUp-Bools basierend auf der Roof-Detection
-        UpdateCanStandUp();
     }
 
     // Überprüfen, ob der Spieler den Boden berührt
@@ -112,34 +109,6 @@ public class Basic3DMovment : MonoBehaviour
         {
             isGrounded = false;
         }
-
-        if (collision.gameObject.tag == "Roof" && crouching)
-        {
-            canStandUp = true; // Spieler kann aufstehen, wenn er nicht mehr unter dem Roof ist
-        }
-    }
-
-    // Überprüfen, ob der Spieler unter einem Roof-Tag-Objekt ist
-    bool IsUnderRoof()
-    {
-        RaycastHit hit;
-        float distanceToRoof = crouchYScale + 0.5f; // 0.5f über dem geduckten Spieler
-
-        // Raycast von der Spielerposition nach oben
-        if (Physics.Raycast(transform.position, Vector3.up, out hit, distanceToRoof))
-        {
-            if (hit.collider.CompareTag("Roof"))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Aktualisiert den canStandUp-Bool basierend auf der aktuellen Situation
-    void UpdateCanStandUp()
-    {
-        canStandUp = !IsUnderRoof();
     }
 
     // Ducken

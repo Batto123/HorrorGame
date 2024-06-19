@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Basic3DMovment : MonoBehaviour
@@ -12,18 +11,20 @@ public class Basic3DMovment : MonoBehaviour
     // Kamera Bewegung
     [SerializeField] GameObject cam;
     // Sprinten
-    [SerializeField] KeyCode sprintKey = KeyCode.LeftShift; 
+    [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
     [SerializeField] float sprintSpeed = 18;
     float currentSpeed;
     // Springen
-    [SerializeField] KeyCode jumpKey = KeyCode.Space; 
+    [SerializeField] KeyCode jumpKey = KeyCode.Space;
     [SerializeField] float jumpForce = 5;
     // Überprüfen, ob der Spieler am Boden ist
     bool isGrounded;
     // Ducken
     [SerializeField] KeyCode crouchKey = KeyCode.LeftControl;
-    [SerializeField] float crouchSpeed = 5; 
+    [SerializeField] float crouchSpeed = 5;
     [SerializeField] float crouchYScale = 0.5f;
+    [SerializeField] bool canStandUp = true; // Serialized Bool für Aufstehen
+
     bool crouching;
 
     float startYScale;
@@ -42,7 +43,7 @@ public class Basic3DMovment : MonoBehaviour
 
     void Update()
     {
-        // Rotationinputs speichern (Die x- und y-Werte sind absichtlich verkehrtherum)
+        // Rotationinputs speichern (Die x- und y-Werte sind absichtlich verkehrt herum)
         float y = Input.GetAxis("Mouse X") * 2;
         float x = Input.GetAxis("Mouse Y") * 2;
 
@@ -62,7 +63,7 @@ public class Basic3DMovment : MonoBehaviour
         {
             currentSpeed = sprintSpeed;
         }
-        else if(!crouching)
+        else if (!crouching)
         {
             currentSpeed = walkSpeed;
         }
@@ -76,21 +77,23 @@ public class Basic3DMovment : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
-        // Wenn die Ducken-Taste gedrückt wird, ducken
+        // Toggle für Ducken/Aufstehen
         if (Input.GetKeyDown(crouchKey))
         {
-            crouching = true;
-            currentSpeed = crouchSpeed;
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+            crouching = !crouching;
+
+            if (crouching)
+            {
+                Crouch();
+            }
+            else if (canStandUp)
+            {
+                StandUp();
+            }
         }
-        // Aufstehen, wenn die Ducken-Taste losgelassen wird
-        if (Input.GetKeyUp(crouchKey))
-        {
-            crouching = false;
-            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
-            currentSpeed = walkSpeed;
-        }
+
+        // Aktualisierung des canStandUp-Bools basierend auf der Roof-Detection
+        UpdateCanStandUp();
     }
 
     // Überprüfen, ob der Spieler den Boden berührt
@@ -102,11 +105,57 @@ public class Basic3DMovment : MonoBehaviour
         }
     }
 
+    // Kombinierte OnCollisionExit Methode
     void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.tag == "Ground")
         {
             isGrounded = false;
         }
+
+        if (collision.gameObject.tag == "Roof" && crouching)
+        {
+            canStandUp = true; // Spieler kann aufstehen, wenn er nicht mehr unter dem Roof ist
+        }
+    }
+
+    // Überprüfen, ob der Spieler unter einem Roof-Tag-Objekt ist
+    bool IsUnderRoof()
+    {
+        RaycastHit hit;
+        float distanceToRoof = crouchYScale + 0.5f; // 0.5f über dem geduckten Spieler
+
+        // Raycast von der Spielerposition nach oben
+        if (Physics.Raycast(transform.position, Vector3.up, out hit, distanceToRoof))
+        {
+            if (hit.collider.CompareTag("Roof"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Aktualisiert den canStandUp-Bool basierend auf der aktuellen Situation
+    void UpdateCanStandUp()
+    {
+        canStandUp = !IsUnderRoof();
+    }
+
+    // Ducken
+    void Crouch()
+    {
+        crouching = true;
+        currentSpeed = crouchSpeed;
+        transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+        rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+    }
+
+    // Aufstehen
+    void StandUp()
+    {
+        crouching = false;
+        transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+        currentSpeed = walkSpeed;
     }
 }

@@ -2056,10 +2056,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad770f33c7d78a40a11608d6cb8f866, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 10
+  walkSpeed: 5
   cam: {fileID: 963194225}
   sprintKey: 304
-  sprintSpeed: 18
+  sprintSpeed: 10
   jumpKey: 32
   jumpForce: 5
 --- !u!136 &723853132

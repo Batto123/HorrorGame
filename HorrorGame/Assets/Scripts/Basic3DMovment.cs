@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using UnityEngine;
 
 public class Basic3DMovment : MonoBehaviour
 {
+    [Header("Movement")]
     // Spieler Rigidbody
     Rigidbody rb;
     // Gehen
@@ -20,6 +20,13 @@ public class Basic3DMovment : MonoBehaviour
     [SerializeField] float jumpForce = 5;
     // Überprüfen, ob der Spieler am Boden ist
     bool isGrounded;
+    // Ducken
+    [SerializeField] KeyCode crouchKey = KeyCode.LeftControl;
+    [SerializeField] float crouchSpeed = 5; 
+    [SerializeField] float crouchYScale = 0.5f;
+    bool crouching;
+
+    float startYScale;
 
     void Awake()
     {
@@ -28,6 +35,9 @@ public class Basic3DMovment : MonoBehaviour
 
         // Maus auf den Screen locken
         Cursor.lockState = CursorLockMode.Locked;
+
+        // Startskala speichern
+        startYScale = transform.localScale.y;
     }
 
     void Update()
@@ -48,11 +58,11 @@ public class Basic3DMovment : MonoBehaviour
         Vector3 relativeInputs = transform.TransformDirection(new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")));
 
         // Prüfen, ob die Sprinttaste gedrückt ist
-        if (Input.GetKey(sprintKey))
+        if (Input.GetKey(sprintKey) && !crouching)
         {
             currentSpeed = sprintSpeed;
         }
-        else
+        else if(!crouching)
         {
             currentSpeed = walkSpeed;
         }
@@ -64,6 +74,22 @@ public class Basic3DMovment : MonoBehaviour
         if (Input.GetKeyDown(jumpKey) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+
+        // Wenn die Ducken-Taste gedrückt wird, ducken
+        if (Input.GetKeyDown(crouchKey))
+        {
+            crouching = true;
+            currentSpeed = crouchSpeed;
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
+        }
+        // Aufstehen, wenn die Ducken-Taste losgelassen wird
+        if (Input.GetKeyUp(crouchKey))
+        {
+            crouching = false;
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            currentSpeed = walkSpeed;
         }
     }
 

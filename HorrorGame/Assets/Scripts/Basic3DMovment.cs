@@ -3,38 +3,32 @@ using UnityEngine;
 
 public class Basic3DMovment : MonoBehaviour
 {
-    [Header("Movement")]
-    // Spieler Rigidbody
-    public Rigidbody rb;
-    // Gehen
-    [SerializeField] float walkSpeed = 10;
-    // Kamera Bewegung
-    [SerializeField] GameObject cam;
-    // Sprinten
+    GameObject cam;
+    private Rigidbody rb;
+    
+    //Input Keys
     [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
-    [SerializeField] float sprintSpeed = 18;
-    float currentSpeed;
-    // Springen
     [SerializeField] KeyCode jumpKey = KeyCode.Space;
-    [SerializeField] float jumpForce = 5;
-    // Überprüfen, ob der Spieler am Boden ist
-    bool isGrounded;
-    // Ducken
     [SerializeField] KeyCode crouchKey = KeyCode.LeftControl;
-    [SerializeField] float crouchSpeed = 5;
+
+    //Nach außen relevant & anpassbar
+    [SerializeField] float walkSpeed = 5;
+    [SerializeField] float sprintSpeed = 8;
+    [SerializeField] float jumpForce = 5;
+    [SerializeField] float crouchSpeed = 2.5f;
     [SerializeField] float crouchYScale = 0.5f;
-    [SerializeField] bool canStandUp = true; // Serialized Bool für Aufstehen
-
-    bool crouching;
-
-    float startYScale;
+    
+    //nur intern relevant
+    private bool isGrounded;
+    private bool crouching;
+    private float currentSpeed;
+    [SerializeField] private bool canStandUp = true; // Serialized Bool für Aufstehen
+    private float startYScale;
 
     void Awake()
     {
-        // Rigidbody zuweisen (Muss bei Unity im gleichen GameObject wie das Script sein)
+        cam = transform.GetChild(0).gameObject;
         rb = gameObject.GetComponent<Rigidbody>();
-
-        // Maus auf den Screen locken
         Cursor.lockState = CursorLockMode.Locked;
 
         // Startskala speichern
@@ -47,12 +41,10 @@ public class Basic3DMovment : MonoBehaviour
         float y = Input.GetAxis("Mouse X") * 2;
         float x = Input.GetAxis("Mouse Y") * 2;
 
-        // Rotation berechnen
+        // Rotation
         Vector3 rotateValue1 = new Vector3(0, y * -1, 0);
         Vector3 rotateValue2 = new Vector3(x, 0, 0);
         transform.eulerAngles = transform.eulerAngles - rotateValue1;
-
-        // Rotation der Kamera zuweisen
         cam.transform.eulerAngles = cam.transform.eulerAngles - rotateValue2;
 
         // Bewegungsinputs speichern

@@ -37,7 +37,6 @@ public class Zombie1Attack : MonoBehaviour
         mainScript.rb.velocity = Vector3.zero;
         mainScript.anim.Play("attack");
         yield return new WaitForSeconds(1f);
-        Debug.Log("Attack finished");
         mainScript.moveState = lastState;
     }
 }

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Zombie1Attack : MonoBehaviour
 {
-    Rigidbody rb;
     ZombieMain mainScript;
 
     [SerializeField] float playerCheckRadius = 1;
@@ -12,7 +11,6 @@ public class Zombie1Attack : MonoBehaviour
 
     void Awake()
     {
-        rb = gameObject.GetComponent<Rigidbody>();
         mainScript = gameObject.GetComponent<ZombieMain>();
     }
 
@@ -25,14 +23,15 @@ public class Zombie1Attack : MonoBehaviour
             {
                 transform.LookAt(colliders[0].gameObject.transform);
                 transform.rotation = Quaternion.Euler(new Vector3(0,transform.rotation.eulerAngles.y,0));
-                StartCoroutine(doAttack());
+                StartCoroutine(DoAttack());
             }
         }
     }
 
-    IEnumerator doAttack()
+    IEnumerator DoAttack()
     {
-        rb.velocity = Vector3.zero;
+        mainScript.rb.velocity = Vector3.zero;
+        mainScript.anim.Play("idle");
         mainScript.moveState = ZombieMain.ZombieMoveStates.ATTACK;
         Debug.Log("Attacking");
         yield return new WaitForSeconds(1f);

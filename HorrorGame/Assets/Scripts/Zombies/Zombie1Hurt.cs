@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Zombie1Hurt : MonoBehaviour, IShootable
 {
-    Rigidbody rb;
-    Material mat;
     ZombieMain mainScript;
+    Material mat;
 
     [SerializeField] int maxLifes = 3;
     [SerializeField] float hitStun = 0.2f;
@@ -15,7 +14,6 @@ public class Zombie1Hurt : MonoBehaviour, IShootable
 
     void Awake()
     {
-        rb = gameObject.GetComponent<Rigidbody>();
         mainScript = gameObject.GetComponent<ZombieMain>();
         mat = transform.GetChild(0).gameObject.GetComponent<Renderer>().material;
 
@@ -28,20 +26,35 @@ public class Zombie1Hurt : MonoBehaviour, IShootable
             return;
 
         if(currentLifes <= 1)
-            Destroy(gameObject);
+        {
+            mainScript.moveState = ZombieMain.ZombieMoveStates.DEAD;
+            mainScript.anim.enabled = false;
+            mainScript.rc.ActivateRagdoll();
+            mainScript.rb.velocity = Vector3.zero;
+            mainScript.rb.isKinematic = true;
+            gameObject.GetComponent<Collider>().enabled = false;
+        }
 
-        currentLifes--;
-        StartCoroutine(inHurt());
+        if(mainScript.moveState != ZombieMain.ZombieMoveStates.DEAD)
+        {
+            currentLifes--;
+            StartCoroutine(inHurt());
+        }
+        
     }
 
     IEnumerator inHurt()
     {
+        ZombieMain.ZombieMoveStates lastState = mainScript.moveState;
+
         mainScript.moveState = ZombieMain.ZombieMoveStates.HURT;
+        mainScript.anim.speed = 0f;
         mat.color = Color.red;
         Debug.Log("AAAAH");
-        rb.velocity = Vector3.zero;
+        mainScript.rb.velocity = Vector3.zero;
         yield return new WaitForSeconds(hitStun);
+        mainScript.anim.speed = 1;
         mat.color = Color.white;
-        mainScript.moveState = ZombieMain.ZombieMoveStates.IDLE;
+        mainScript.moveState = lastState;
     }
 }

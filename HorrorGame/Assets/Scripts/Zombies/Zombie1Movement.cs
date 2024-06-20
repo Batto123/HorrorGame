@@ -8,6 +8,7 @@ public class Zombie1Movement : MonoBehaviour
     Rigidbody rb;
     ZombieMain mainScript;
 
+    [SerializeField] float walkSpeed = 2;
     [SerializeField] float playerCheckRadius = 5;
     [SerializeField] LayerMask playerLayer;
 
@@ -40,7 +41,7 @@ public class Zombie1Movement : MonoBehaviour
                 transform.LookAt(colliders[0].gameObject.transform);
                 transform.rotation = Quaternion.Euler(new Vector3(0,transform.rotation.eulerAngles.y,0));
 
-                rb.velocity = transform.forward;
+                rb.velocity = transform.forward * walkSpeed;
             }
 
             

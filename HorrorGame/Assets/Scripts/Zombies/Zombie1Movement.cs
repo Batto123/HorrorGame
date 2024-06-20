@@ -19,7 +19,7 @@ public class Zombie1Movement : MonoBehaviour
     {
         if(mainScript.moveState == ZombieMain.ZombieMoveStates.IDLE)
         {
-            mainScript.anim.Play("idle");
+            mainScript.anim.Play("idleZombie1");
 
             Collider[] colliders = Physics.OverlapSphere(transform.position, playerCheckRadius, playerLayer);
             if(colliders.Length > 0)
@@ -29,7 +29,7 @@ public class Zombie1Movement : MonoBehaviour
         }
         else if(mainScript.moveState == ZombieMain.ZombieMoveStates.WALK)
         {
-            mainScript.anim.Play("walk");
+            mainScript.anim.Play("walkZombie1");
 
             Collider[] colliders = Physics.OverlapSphere(transform.position, playerCheckRadius, playerLayer);
             if(colliders.Length == 0)

@@ -28,6 +28,8 @@ public class RagdollController : MonoBehaviour
             part.GetComponent<Rigidbody>().isKinematic = true;
             part.GetComponent<Collider>().enabled = false;
         }
+
+        DeactivateRagdoll();
     }
 
     public void ActivateRagdoll()

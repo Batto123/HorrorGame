@@ -30,11 +30,14 @@ public class Zombie1Attack : MonoBehaviour
 
     IEnumerator DoAttack()
     {
-        mainScript.rb.velocity = Vector3.zero;
-        mainScript.anim.Play("idle");
+        ZombieMain.ZombieMoveStates lastState = mainScript.moveState;
+
         mainScript.moveState = ZombieMain.ZombieMoveStates.ATTACK;
-        Debug.Log("Attacking");
+        yield return new WaitForSeconds(0.01f);
+        mainScript.rb.velocity = Vector3.zero;
+        mainScript.anim.Play("attack");
         yield return new WaitForSeconds(1f);
-        mainScript.moveState = ZombieMain.ZombieMoveStates.IDLE;
+        Debug.Log("Attack finished");
+        mainScript.moveState = lastState;
     }
 }

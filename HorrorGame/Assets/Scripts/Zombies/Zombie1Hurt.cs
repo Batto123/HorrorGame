@@ -48,7 +48,7 @@ public class Zombie1Hurt : MonoBehaviour, IShootable
         ZombieMain.ZombieMoveStates lastState = mainScript.moveState;
 
         mainScript.moveState = ZombieMain.ZombieMoveStates.HURT;
-        mainScript.anim.speed = 0f;
+        mainScript.anim.speed = 0;
         mat.color = Color.red;
         mainScript.rb.velocity = Vector3.zero;
         yield return new WaitForSeconds(hitStun);

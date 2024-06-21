@@ -24,19 +24,18 @@ public class Zombie1Attack : MonoBehaviour
                 transform.LookAt(colliders[0].gameObject.transform);
                 transform.rotation = Quaternion.Euler(new Vector3(0,transform.rotation.eulerAngles.y,0));
                 StartCoroutine(DoAttack());
+
             }
         }
     }
 
     IEnumerator DoAttack()
     {
-        ZombieMain.ZombieMoveStates lastState = mainScript.moveState;
-
         mainScript.moveState = ZombieMain.ZombieMoveStates.ATTACK;
         yield return new WaitForSeconds(0.01f);
-        mainScript.rb.velocity = Vector3.zero;
         mainScript.anim.Play("attack");
+        mainScript.rb.velocity = Vector3.zero;
         yield return new WaitForSeconds(1f);
-        mainScript.moveState = lastState;
+        mainScript.moveState = ZombieMain.ZombieMoveStates.IDLE;
     }
 }

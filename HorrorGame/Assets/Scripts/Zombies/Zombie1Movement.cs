@@ -17,13 +17,16 @@ public class Zombie1Movement : MonoBehaviour
 
     void Update()
     {
+
         if(mainScript.moveState == ZombieMain.ZombieMoveStates.IDLE)
         {
             mainScript.anim.Play("idleZombie1");
+            mainScript.rigBuilder.enabled = false;
 
             Collider[] colliders = Physics.OverlapSphere(transform.position, playerCheckRadius, playerLayer);
             if(colliders.Length > 0)
             {
+                mainScript.rigBuilder.enabled = true;
                 mainScript.moveState = ZombieMain.ZombieMoveStates.WALK;
             }
         }
@@ -48,6 +51,8 @@ public class Zombie1Movement : MonoBehaviour
 
             
         }
+
+        
     }
 
 }

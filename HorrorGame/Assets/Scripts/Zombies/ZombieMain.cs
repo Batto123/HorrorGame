@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class ZombieMain : MonoBehaviour
 {
@@ -16,15 +17,17 @@ public class ZombieMain : MonoBehaviour
 
     public ZombieMoveStates moveState = ZombieMoveStates.IDLE;
     
-    [NonSerialized] public Animator anim;
     [NonSerialized] public Rigidbody rb;
     [NonSerialized] public RagdollController rc;
+    [NonSerialized] public RigBuilder rigBuilder;
+    [NonSerialized] public Animator anim;
 
     void Awake()
     {
-        anim = gameObject.GetComponent<Animator>();
         rb = gameObject.GetComponent<Rigidbody>();
-        rc = gameObject.GetComponent<RagdollController>();   
+        rc = gameObject.GetComponent<RagdollController>();
+        rigBuilder = this.gameObject.GetComponent<RigBuilder>();
+        anim = gameObject.GetComponent<Animator>();
     }
 
     void Start()

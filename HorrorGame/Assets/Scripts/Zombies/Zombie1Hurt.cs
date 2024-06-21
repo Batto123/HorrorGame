@@ -22,7 +22,7 @@ public class Zombie1Hurt : MonoBehaviour, IShootable
 
     public void GetShot(Vector3 knockback = default(Vector3))
     {
-        if(mainScript.moveState == ZombieMain.ZombieMoveStates.HURT)
+        if(mainScript.moveState == ZombieMain.ZombieMoveStates.HURT || mainScript.moveState == ZombieMain.ZombieMoveStates.DEAD)
             return;
 
         if(currentLifes <= 1)

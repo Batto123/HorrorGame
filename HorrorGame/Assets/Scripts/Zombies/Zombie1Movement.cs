@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,9 +11,13 @@ public class Zombie1Movement : MonoBehaviour
     [SerializeField] float playerCheckRadius = 5;
     [SerializeField] LayerMask playerLayer;
 
+    [SerializeField] private AudioSource mainSound;
+
     void Awake()
     {
         mainScript = gameObject.GetComponent<ZombieMain>();
+
+        StartCoroutine(DoSound());
     }
 
     void Update()
@@ -28,6 +33,7 @@ public class Zombie1Movement : MonoBehaviour
             {
                 mainScript.rigBuilder.enabled = true;
                 mainScript.moveState = ZombieMain.ZombieMoveStates.WALK;
+                mainSound.Play();
             }
         }
         else if(mainScript.moveState == ZombieMain.ZombieMoveStates.WALK)
@@ -48,11 +54,14 @@ public class Zombie1Movement : MonoBehaviour
 
                 mainScript.rb.velocity = transform.forward * walkSpeed;
             }
-
-            
         }
-
-        
     }
 
+    IEnumerator DoSound()
+    {
+        yield return new WaitForSeconds(Random.Range(5, 7));
+        if(mainScript.moveState == ZombieMain.ZombieMoveStates.WALK)
+            mainSound.Play();
+        StartCoroutine(DoSound());
+    }
 }

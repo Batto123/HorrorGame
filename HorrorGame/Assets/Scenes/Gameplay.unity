@@ -2826,11 +2826,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3f5eb3f916bf1f48b33118ea44f7d1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  idleBobbingAmount: 0.05
-  walkBobbingAmount: 0.1
-  sprintBobbingAmount: 0.15
-  crouchBobbingAmount: 0.05
-  bobbingSpeed: 1
+  idleBobbingAmount: 0.01
+  walkBobbingAmount: 0.15
+  sprintBobbingAmount: 0.5
+  crouchBobbingAmount: 0.1
+  bobbingSpeed: 2
 --- !u!1 &1057660606
 GameObject:
   m_ObjectHideFlags: 0

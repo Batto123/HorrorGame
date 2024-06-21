@@ -74,18 +74,21 @@ public class Basic3DMovment : MonoBehaviour
         }
 
         // Laufbewegung zuweisen
-        if (OnSlope())
+        if (OnSlope() && !Input.GetKey(jumpKey))
         {
             rb.velocity = GetSlopeMoveDirection() * currentSpeed;
+            rb.useGravity = false; // Schwerkraft deaktivieren, wenn auf dem Hang
         }
         else
         {
             rb.velocity = new Vector3(currentSpeed * moveDirection.x, rb.velocity.y, currentSpeed * moveDirection.z);
+            rb.useGravity = true; // Schwerkraft aktivieren
         }
 
         // Prüfen, ob die Sprungtaste gedrückt wurde und der Spieler auf dem Boden ist
         if (Input.GetKeyDown(jumpKey) && isGrounded)
         {
+            rb.useGravity = true; // Schwerkraft aktivieren, um zu springen
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
@@ -103,9 +106,6 @@ public class Basic3DMovment : MonoBehaviour
                 StandUp();
             }
         }
-
-        // verhindern das der player auf einem slope runterutsch
-        rb.useGravity = !OnSlope();
     }
 
     // Überprüfen, ob der Spieler den Boden berührt
@@ -114,6 +114,7 @@ public class Basic3DMovment : MonoBehaviour
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+            rb.useGravity = !OnSlope(); // Schwerkraft basierend auf dem Hangstatus setzen
         }
     }
 

@@ -2273,6 +2273,11 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1 &640399716 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3843949909451409897, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+  m_PrefabInstance: {fileID: 3843949909838800024}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2367,6 +2372,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!54 &721024937 stripped
+Rigidbody:
+  m_CorrespondingSourceObject: {fileID: 3843949909152840648, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+  m_PrefabInstance: {fileID: 3843949909838800024}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &721024938 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3843949909152840659, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+  m_PrefabInstance: {fileID: 3843949909838800024}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ad770f33c7d78a40a11608d6cb8f866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &881614554
 Mesh:
   m_ObjectHideFlags: 0
@@ -5778,6 +5799,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3843949909152840659, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 721024937}
+    - target: {fileID: 3843949909152840659, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 640399716}
     - target: {fileID: 3843949909152840663, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -5826,6 +5855,10 @@ PrefabInstance:
       propertyPath: bobbingSpeed
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 3843949909451409901, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: playerMovement
+      value: 
+      objectReference: {fileID: 721024938}
     - target: {fileID: 3843949909451409901, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
       propertyPath: idleBobbingAmount
       value: 0.01

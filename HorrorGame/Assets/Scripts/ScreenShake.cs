@@ -43,7 +43,7 @@ public class ScreenShake : MonoBehaviour
             return idleBobbingAmount;
         }
 
-        if (playerMovement.IsSprinting())
+        if (playerMovement.IsSprinting() && playerMovement.IsMoving())
         {
             return sprintBobbingAmount;
         }

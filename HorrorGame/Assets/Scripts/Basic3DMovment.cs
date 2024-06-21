@@ -3,32 +3,43 @@ using UnityEngine;
 
 public class Basic3DMovment : MonoBehaviour
 {
-    GameObject cam;
-    private Rigidbody rb;
-    
-    //Input Keys
+    [Header("Movement")]
+    // Spieler Rigidbody
+    public Rigidbody rb;
+    // Gehen
+    [SerializeField] float walkSpeed = 10f;
+    // Kamera Bewegung
+    [SerializeField] public GameObject cam; // Zugriffsschutz geändert zu public
+    // Sprinten
     [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
+    [SerializeField] float sprintSpeed = 18f;
+    float currentSpeed;
+    // Springen
     [SerializeField] KeyCode jumpKey = KeyCode.Space;
+    [SerializeField] float jumpForce = 5f;
+    // Überprüfen, ob der Spieler am Boden ist
+    bool isGrounded;
+    // Ducken
     [SerializeField] KeyCode crouchKey = KeyCode.LeftControl;
-
-    //Nach außen relevant & anpassbar
-    [SerializeField] float walkSpeed = 5;
-    [SerializeField] float sprintSpeed = 8;
-    [SerializeField] float jumpForce = 5;
-    [SerializeField] float crouchSpeed = 2.5f;
+    [SerializeField] float crouchSpeed = 5f;
     [SerializeField] float crouchYScale = 0.5f;
-    
-    //nur intern relevant
-    private bool isGrounded;
-    private bool crouching;
-    private float currentSpeed;
-    [SerializeField] private bool canStandUp = true; // Serialized Bool für Aufstehen
-    private float startYScale;
+    [SerializeField] bool canStandUp = true; // Serialized Bool für Aufstehen
+
+    // Slope Handling
+    public float maxSlopeAngle = 45f;
+    private RaycastHit slopeHit;
+    private float playerHeight = 2f; // Höhe des Spielers
+    private Vector3 moveDirection;
+
+    bool crouching;
+    float startYScale;
 
     void Awake()
     {
-        cam = transform.GetChild(0).gameObject;
+        // Rigidbody zuweisen (Muss bei Unity im gleichen GameObject wie das Script sein)
         rb = gameObject.GetComponent<Rigidbody>();
+
+        // Maus auf den Screen locken
         Cursor.lockState = CursorLockMode.Locked;
 
         // Startskala speichern
@@ -37,18 +48,20 @@ public class Basic3DMovment : MonoBehaviour
 
     void Update()
     {
-        // Rotationinputs speichern (Die x- und y-Werte sind absichtlich verkehrt herum)
+        // Rotationinputs speichern
         float y = Input.GetAxis("Mouse X") * 2;
         float x = Input.GetAxis("Mouse Y") * 2;
 
-        // Rotation
-        Vector3 rotateValue1 = new Vector3(0, y * -1, 0);
-        Vector3 rotateValue2 = new Vector3(x, 0, 0);
-        transform.eulerAngles = transform.eulerAngles - rotateValue1;
-        cam.transform.eulerAngles = cam.transform.eulerAngles - rotateValue2;
+        // Rotation berechnen
+        Vector3 rotateValue1 = new Vector3(0, y, 0);
+        Vector3 rotateValue2 = new Vector3(-x, 0, 0);
+        transform.eulerAngles += rotateValue1;
+
+        // Rotation der Kamera zuweisen
+        cam.transform.localEulerAngles += rotateValue2;
 
         // Bewegungsinputs speichern
-        Vector3 relativeInputs = transform.TransformDirection(new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")));
+        moveDirection = transform.TransformDirection(new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")));
 
         // Prüfen, ob die Sprinttaste gedrückt ist
         if (Input.GetKey(sprintKey) && !crouching)
@@ -61,7 +74,14 @@ public class Basic3DMovment : MonoBehaviour
         }
 
         // Laufbewegung zuweisen
-        rb.velocity = new Vector3(currentSpeed * relativeInputs.x, rb.velocity.y, currentSpeed * relativeInputs.z);
+        if (OnSlope())
+        {
+            rb.velocity = GetSlopeMoveDirection() * currentSpeed;
+        }
+        else
+        {
+            rb.velocity = new Vector3(currentSpeed * moveDirection.x, rb.velocity.y, currentSpeed * moveDirection.z);
+        }
 
         // Prüfen, ob die Sprungtaste gedrückt wurde und der Spieler auf dem Boden ist
         if (Input.GetKeyDown(jumpKey) && isGrounded)
@@ -83,12 +103,15 @@ public class Basic3DMovment : MonoBehaviour
                 StandUp();
             }
         }
+
+        // verhindern das der player auf einem slope runterutsch
+        rb.useGravity = !OnSlope();
     }
 
     // Überprüfen, ob der Spieler den Boden berührt
     void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag == "Ground")
+        if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
         }
@@ -97,7 +120,7 @@ public class Basic3DMovment : MonoBehaviour
     // Kombinierte OnCollisionExit Methode
     void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.tag == "Ground")
+        if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
         }
@@ -123,7 +146,7 @@ public class Basic3DMovment : MonoBehaviour
     // Methode zur Überprüfung, ob der Spieler sprintet
     public bool IsSprinting()
     {
-        return Input.GetKey(sprintKey) && !crouching;
+        return Input.GetKey(sprintKey) && !crouching && IsMoving();
     }
 
     // Methode zur Überprüfung, ob der Spieler geduckt ist
@@ -135,12 +158,29 @@ public class Basic3DMovment : MonoBehaviour
     // Methode zur Überprüfung, ob der Spieler geht
     public bool IsWalking()
     {
-        // Hier kannst du die Bedingung für das Gehen definieren, z.B. basierend auf der Geschwindigkeit
-        return rb.velocity.magnitude > 0 && !IsSprinting() && !IsCrouching();
+        return rb.velocity.magnitude > 0.1f && !IsSprinting() && !IsCrouching();
     }
 
-    public Vector3 GetCamRotation()
+    // Methode zur Überprüfung, ob der Spieler sich bewegt
+    public bool IsMoving()
     {
-        return cam.transform.eulerAngles;
+        return moveDirection.magnitude > 0.1f;
+    }
+
+    // Überprüfen, ob der Spieler sich auf einem Hang befindet
+    private bool OnSlope()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+        return false;
+    }
+
+    // Richtung in der sich der Spieler auf einem Hang bewegt
+    private Vector3 GetSlopeMoveDirection()
+    {
+        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
 }

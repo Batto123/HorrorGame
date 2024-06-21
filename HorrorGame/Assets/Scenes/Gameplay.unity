@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5821,6 +5821,26 @@ PrefabInstance:
     - target: {fileID: 3843949909152840663, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843949909451409901, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: bobbingSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843949909451409901, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: idleBobbingAmount
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843949909451409901, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: walkBobbingAmount
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843949909451409901, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: crouchBobbingAmount
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843949909451409901, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: sprintBobbingAmount
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}

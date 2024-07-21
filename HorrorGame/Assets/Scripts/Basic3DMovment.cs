@@ -57,6 +57,12 @@ public class Basic3DMovment : MonoBehaviour
             currentSpeed = walkSpeed;
         }
 
+        // Block movement in the direction of walls
+        if (CheckWallCollisions())
+        {
+            moveDirection = Vector3.zero; // Stop movement if a wall is detected in the move direction
+        }
+
         if (OnSlope() && !Input.GetKey(jumpKey))
         {
             rb.velocity = GetSlopeMoveDirection() * currentSpeed;
@@ -154,5 +160,18 @@ public class Basic3DMovment : MonoBehaviour
     private Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+    }
+
+    private bool CheckWallCollisions()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, moveDirection, out hit, 0.6f))
+        {
+            if (hit.collider.CompareTag("Wall"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

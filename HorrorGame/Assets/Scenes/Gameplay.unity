@@ -5795,6 +5795,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3843949909152840648, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: m_Drag
+      value: 9.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843949909152840648, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843949909152840648, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: m_Interpolate
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3843949909152840648, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3843949909152840658, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
       propertyPath: m_Name
       value: Player
@@ -5807,6 +5823,10 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 640399716}
+    - target: {fileID: 3843949909152840659, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
+      propertyPath: jumpForce
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3843949909152840663, guid: 5b8728ce03d7ba940be1f0693c336f06, type: 3}
       propertyPath: m_RootOrder
       value: 1

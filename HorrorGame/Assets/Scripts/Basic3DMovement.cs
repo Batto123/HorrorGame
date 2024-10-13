@@ -1,18 +1,18 @@
 using System.Collections;
 using UnityEngine;
 
-public class Basic3DMovment : MonoBehaviour
+public class Basic3DMovement : MonoBehaviour
 {
     [Header("Movement")]
     public Rigidbody rb;
     [SerializeField] float walkSpeed = 10f;
-    [SerializeField] public GameObject cam;
+    [SerializeField] public GameObject cam;  // Referenz auf die Kamera
     [SerializeField] KeyCode sprintKey = KeyCode.LeftShift;
     [SerializeField] float sprintSpeed = 18f;
     float currentSpeed;
-    [SerializeField] KeyCode jumpKey = KeyCode.Space;
+    [SerializeField] public KeyCode jumpKey = KeyCode.Space;
     [SerializeField] float jumpForce = 5f;
-    bool isGrounded;
+    public bool isGrounded;
     [SerializeField] KeyCode crouchKey = KeyCode.LeftControl;
     [SerializeField] float crouchSpeed = 5f;
     [SerializeField] float crouchYScale = 0.5f;
@@ -26,6 +26,10 @@ public class Basic3DMovment : MonoBehaviour
     bool crouching;
     float startYScale;
 
+    // Drehgeschwindigkeit für die Maus
+    [SerializeField] float mouseSensitivity = 2f;  
+    private float rotationY = 0f;  // Speicherung der vertikalen Rotation
+
     void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody>();
@@ -38,14 +42,19 @@ public class Basic3DMovment : MonoBehaviour
 
     void Update()
     {
-        float y = Input.GetAxis("Mouse X") * 2;
-        float x = Input.GetAxis("Mouse Y") * 2;
+        // Mausrotation
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        Vector3 rotateValue1 = new Vector3(0, y, 0);
-        Vector3 rotateValue2 = new Vector3(-x, 0, 0);
-        transform.eulerAngles += rotateValue1;
-        cam.transform.localEulerAngles += rotateValue2;
+        // Horizontale Rotation
+        transform.Rotate(Vector3.up * mouseX);
 
+        // Vertikale Rotation
+        rotationY -= mouseY;
+        rotationY = Mathf.Clamp(rotationY, -45f, 45f); // Begrenzung der vertikalen Rotation
+        cam.transform.localEulerAngles = new Vector3(rotationY, 0, 0);
+
+        // Bewegung
         moveDirection = transform.TransformDirection(new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")));
 
         if (Input.GetKey(sprintKey) && !crouching)

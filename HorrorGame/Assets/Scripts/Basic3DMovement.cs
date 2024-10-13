@@ -41,68 +41,73 @@ public class Basic3DMovement : MonoBehaviour
     }
 
     void Update()
+{
+    // Mausrotation
+    float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+    float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+
+    // Horizontale Rotation
+    transform.Rotate(Vector3.up * mouseX);
+
+    // Vertikale Rotation
+    rotationY -= mouseY;
+    rotationY = Mathf.Clamp(rotationY, -45f, 45f); // Begrenzung der vertikalen Rotation
+    cam.transform.localEulerAngles = new Vector3(rotationY, 0, 0);
+
+    // Bewegung
+    moveDirection = transform.TransformDirection(new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")));
+
+    // Geschwindigkeit abhängig vom Sprinten oder Crouchen
+    if (Input.GetKey(sprintKey) && !crouching)
     {
-        // Mausrotation
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        currentSpeed = sprintSpeed;
+    }
+    else if (!crouching)
+    {
+        currentSpeed = walkSpeed;
+    }
 
-        // Horizontale Rotation
-        transform.Rotate(Vector3.up * mouseX);
+    // Block movement in the direction of walls
+    if (CheckWallCollisions())
+    {
+        moveDirection = Vector3.zero; // Stop movement if a wall is detected in the move direction
+    }
 
-        // Vertikale Rotation
-        rotationY -= mouseY;
-        rotationY = Mathf.Clamp(rotationY, -45f, 45f); // Begrenzung der vertikalen Rotation
-        cam.transform.localEulerAngles = new Vector3(rotationY, 0, 0);
+    // Auf dem Slope bleiben, aber nur wenn nicht gesprungen wird
+    if (OnSlope() && !Input.GetKey(jumpKey) && isGrounded)
+    {
+        rb.velocity = GetSlopeMoveDirection() * currentSpeed;
+        rb.useGravity = false;  // Schwerkraft auf dem Slope deaktivieren
+    }
+    else
+    {
+        rb.useGravity = true;  // Schwerkraft aktivieren, um normal zu fallen
+        rb.velocity = new Vector3(currentSpeed * moveDirection.x, rb.velocity.y, currentSpeed * moveDirection.z);
+    }
 
-        // Bewegung
-        moveDirection = transform.TransformDirection(new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")));
+    // Springen, wenn die Taste gedrückt wird und der Spieler am Boden ist
+    if (Input.GetKeyDown(jumpKey) && isGrounded)
+    {
+        rb.useGravity = true;  // Schwerkraft aktivieren, um den Sprung zu ermöglichen
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);  // Vertikaler Sprung
+    }
 
-        if (Input.GetKey(sprintKey) && !crouching)
+    // Crouching-Logik
+    if (Input.GetKeyDown(crouchKey))
+    {
+        crouching = !crouching;
+
+        if (crouching)
         {
-            currentSpeed = sprintSpeed;
+            Crouch();
         }
-        else if (!crouching)
+        else if (canStandUp)
         {
-            currentSpeed = walkSpeed;
-        }
-
-        // Block movement in the direction of walls
-        if (CheckWallCollisions())
-        {
-            moveDirection = Vector3.zero; // Stop movement if a wall is detected in the move direction
-        }
-
-        if (OnSlope() && !Input.GetKey(jumpKey))
-        {
-            rb.velocity = GetSlopeMoveDirection() * currentSpeed;
-            rb.useGravity = false;
-        }
-        else
-        {
-            rb.useGravity = true;
-            rb.velocity = new Vector3(currentSpeed * moveDirection.x, rb.velocity.y, currentSpeed * moveDirection.z);
-        }
-
-        if (Input.GetKeyDown(jumpKey) && isGrounded)
-        {
-            rb.useGravity = true;
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-
-        if (Input.GetKeyDown(crouchKey))
-        {
-            crouching = !crouching;
-
-            if (crouching)
-            {
-                Crouch();
-            }
-            else if (canStandUp)
-            {
-                StandUp();
-            }
+            StandUp();
         }
     }
+}
+
 
     void OnCollisionStay(Collision collision)
     {

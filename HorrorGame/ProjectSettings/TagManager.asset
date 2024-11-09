@@ -15,8 +15,8 @@ TagManager:
   - MovableObject
   - Water
   - UI
-  - 
-  - 
+  - Player
+  - Enemy
   - 
   - 
   - 

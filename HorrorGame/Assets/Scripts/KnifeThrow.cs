@@ -9,13 +9,11 @@ public class KnifeThrow : MonoBehaviour
     [SerializeField] private float throwPower = 10;
     [SerializeField] private float delayAfterThrow = 1f;
 
-    [SerializeField] private GameObject knife;
+    [SerializeField] private Knife knife;
     private Rigidbody knifeRB;
     [SerializeField] private Transform defaultParent;
     [SerializeField] LayerMask hitLayers;
     [SerializeField] AudioClip throwSound;
-
-    private bool currentlyHolding = true;
 
     private Ray bulletRay;
     private GameObject target;
@@ -30,16 +28,16 @@ public class KnifeThrow : MonoBehaviour
     {
         bool input = Input.GetKeyDown(KeyCode.Mouse0);
         
-        if(input && currentlyHolding)
+        if(input && knife.currentlyHolding)
         {
             knifeRB.isKinematic = false;
             knife.transform.parent = null;
             knife.GetComponent<BoxCollider>().enabled = true;
             knifeRB.AddForce(knife.transform.forward * throwPower, ForceMode.Impulse);
             AudioSource.PlayClipAtPoint(throwSound, transform.position);
-            currentlyHolding = false;
+            knife.currentlyHolding = false;
         }
-        else if(input && !currentlyHolding)
+        else if(input && !knife.currentlyHolding)
         {
             ResetKnife();
         }
@@ -53,6 +51,6 @@ public class KnifeThrow : MonoBehaviour
         knife.transform.rotation = defaultParent.transform.rotation;
         knife.transform.parent = defaultParent;
         knife.transform.localPosition = Vector3.zero;
-        currentlyHolding = true;
+        knife.currentlyHolding = true;
     }
 }

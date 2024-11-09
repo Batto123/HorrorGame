@@ -74,7 +74,6 @@ public class ScreenShake : MonoBehaviour
 
         if (speed < _toggleSpeed) return;
 
-        Debug.Log("Player is moving: " + speed); // Zeige die aktuelle Geschwindigkeit im Debug-Log an
         PlayMotion(FootStepMotion());
     }
 

@@ -5,7 +5,7 @@ public class Basic3DMovment : MonoBehaviour
 {
     [Header("Movement")]
     // Spieler Rigidbody
-    Rigidbody rb;
+    public Rigidbody rb;
     // Gehen
     [SerializeField] float walkSpeed = 10;
     // Kamera Bewegung
@@ -126,5 +126,29 @@ public class Basic3DMovment : MonoBehaviour
         crouching = false;
         transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
         currentSpeed = walkSpeed;
+    }
+
+    // Methode zur Überprüfung, ob der Spieler sprintet
+    public bool IsSprinting()
+    {
+        return Input.GetKey(sprintKey) && !crouching;
+    }
+
+    // Methode zur Überprüfung, ob der Spieler geduckt ist
+    public bool IsCrouching()
+    {
+        return crouching;
+    }
+
+    // Methode zur Überprüfung, ob der Spieler geht
+    public bool IsWalking()
+    {
+        // Hier kannst du die Bedingung für das Gehen definieren, z.B. basierend auf der Geschwindigkeit
+        return rb.velocity.magnitude > 0 && !IsSprinting() && !IsCrouching();
+    }
+
+    public Vector3 GetCamRotation()
+    {
+        return cam.transform.eulerAngles;
     }
 }

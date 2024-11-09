@@ -61,7 +61,7 @@ public class ZombieWalkState: BaseState
             zombie.transform.LookAt(colliders[0].gameObject.transform);
             zombie.transform.rotation = Quaternion.Euler(new Vector3(0, zombie.transform.rotation.eulerAngles.y,0));
 
-            zombie.rb.velocity = zombie.transform.forward * zombie.walkSpeed;
+            zombie.rb.velocity = new Vector3(zombie.transform.forward.x * zombie.walkSpeed, zombie.rb.velocity.y, zombie.transform.forward.z * zombie.walkSpeed);
         }
 
         colliders = Physics.OverlapSphere(zombie.transform.position, zombie.attackRange, zombie.playerLayer);

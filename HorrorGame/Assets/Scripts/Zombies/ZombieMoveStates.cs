@@ -9,7 +9,7 @@ public class ZombieIdleState: BaseState
     public override void Update(ZombieMain zombie)
     {
         zombie.anim.Play("idleZombie1");
-        zombie.rigBuilder.enabled = false;
+        zombie.headTracking.enabled = false;
 
         Collider[] colliders = Physics.OverlapSphere(zombie.transform.position, zombie.attackRange, zombie.playerLayer);
         if(colliders.Length > 0)
@@ -23,7 +23,7 @@ public class ZombieIdleState: BaseState
         colliders = Physics.OverlapSphere(zombie.transform.position, zombie.viewRadius, zombie.playerLayer);
         if(colliders.Length > 0)
         {
-            zombie.rigBuilder.enabled = true;
+            zombie.headTracking.enabled = true;
             zombie.SwitchState(zombie.WalkState);
             return;
         }

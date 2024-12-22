@@ -10,7 +10,7 @@ public class ZombieMain : MonoBehaviour
     //Verweise
     [NonSerialized] public Rigidbody rb;
     [NonSerialized] public RagdollController rc;
-    [NonSerialized] public RigBuilder rigBuilder;
+    public MultiAimConstraint headTracking;
     [NonSerialized] public Animator anim;
     [NonSerialized] public Material material;
 
@@ -36,10 +36,8 @@ public class ZombieMain : MonoBehaviour
     {
         rb = gameObject.GetComponent<Rigidbody>();
         rc = gameObject.GetComponent<RagdollController>();
-        rigBuilder = gameObject.GetComponent<RigBuilder>();
         anim = gameObject.GetComponent<Animator>();
         material = transform.GetChild(0).gameObject.GetComponent<Renderer>().material;
-
         CurrentState = IdleState;
         CurrentState.Enter(this, IdleState);
     }
